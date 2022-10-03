@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="escape_from_the_cage:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/escape_from_the_cage_jar</output-path>
+    <root id="archive" name="escape_from_the_cage.jar">
+      <element id="module-output" name="escape_from_the_cage" />
+    </root>
+  </artifact>
+</component>
