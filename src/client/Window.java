@@ -18,6 +18,7 @@ public class Window extends JPanel {
             throw new RuntimeException(e);
         }
     }
+    
     public Window() {
         try{
             socket = new Socket("localhost",6666);
