@@ -1,16 +1,24 @@
 package client;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.net.URL;
+import java.util.Objects;
 
 public class Window extends JPanel {
     Socket socket;
     DataOutputStream dout;
     DataInputStream dis;
-    private void write_string(String string) {
+    BufferedImage img1;
+    URL url;
+    private void string_write(String string) {
         try {
             dout.writeUTF(string);
             dout.flush();
@@ -18,21 +26,37 @@ public class Window extends JPanel {
             throw new RuntimeException(e);
         }
     }
-    
     public Window() {
         try{
-            socket = new Socket("localhost",6666);
+//            socket = new Socket("159.223.209.4", 6666);
+            socket = new Socket("localhost", 6666);
             dout = new DataOutputStream(socket.getOutputStream());
             dis = new DataInputStream(socket.getInputStream());
         } catch (Exception e) {
-            System.out.println(e);
+            System.out.println("Error with connect: " + e);
         }
-        write_string("ned img1");
+        
         try {
-            while (true) {
-//                System.out.println(dis.readUTF());
-                System.out.println(dis.read());
-            }
+            url = new URL("https://cageescape.lovie.dev/game-resources/img1.png");
+            img1 = ImageIO.read(url);
+        } catch (IOException e) {
+            throw new RuntimeException("Error with get image from url: " + e);
+        }
+
+        for (int i = 0; i < 4; i++) {
+            String get = string_read();
+            int T, X, Y, Z;
+            System.out.println("Got: T: " + get.charAt(3) + ", X: " + get.charAt(9) + ", Y: " + get.charAt(15) + ", Z: " + get.charAt(21));
+        }
+    }
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(img1, 0, 0 ,128, 128, this);
+    }
+    public String string_read() {
+        try {
+            return dis.readUTF();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

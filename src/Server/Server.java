@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Objects;
 
 public class Server {
     //static ServerSocket variable
@@ -14,16 +13,19 @@ public class Server {
     ServerSocket ss;
     Socket s;
     DataInputStream dis;
-    DataOutputStream dis2;
+    DataOutputStream dout;
     File img1;
     Timer timer;
-//    public int int_read() {
-//        try {
-//            return dis.readInt();
-//        } catch (IOException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
+    int connection = 0;
+
+    private void string_write(String string) {
+        try {
+            dout.writeUTF(string);
+            dout.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public String string_read() {
         try {
             return dis.readUTF();
@@ -31,32 +33,31 @@ public class Server {
             throw new RuntimeException(e);
         }
     }
+    public void send_tile_location(int T, int X, int Y, int Z) {
+        String will_be_send = "T: " + T + ", X: " + X + ", Y: " + Y + ", Z: " + Z;
+        string_write(will_be_send);
+        System.out.println("SERVER: to " + this.connection + " user, send - " + will_be_send);
+    }
     public Server() {
-        img1 = new File("src/Server/date/1.png");
-        byte[] byte_array = new byte[(int) img1.length()];
-        System.out.println("SERVER: started");
-
         try {
             ss = new ServerSocket(6666);
+
             while (true) {
+                if (connection > 0) {
+                    System.out.println();
+                } connection++;
+
                 s = ss.accept();
                 dis = new DataInputStream(s.getInputStream());
-                dis2 = new DataOutputStream(s.getOutputStream());
+                dout = new DataOutputStream(s.getOutputStream());
+//                System.out.println("SERVER: connected new user");
 
-                String get = string_read();
-                System.out.println("GOT: " + get);
-
-                if (Objects.equals(get.substring(0, 3), "ned")) {
-                    if (Objects.equals(get.substring(4), "img1")) {
-                        dis2.writeInt((int) img1.length());
-                        dis2.write(byte_array, 0, byte_array.length);
-                        System.out.println("SERVER: sent img 1 (grass)");
-                    }
-                }
+                send_tile_location(1, 0, 0, 0);
+                send_tile_location(1, 1, 0, 0);
+                send_tile_location(1, 0, 1, 0);
+                send_tile_location(1, 1, 1, 0);
             }
-        } catch (Exception e) {
-//            System.out.println(e);
-        }
+        } catch (Exception e) {}
     }
 
     public static void main(String[] args) {
