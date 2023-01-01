@@ -10,14 +10,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.util.Objects;
 
 public class Window extends JPanel {
     Socket socket;
     DataOutputStream dout;
     DataInputStream dis;
     BufferedImage img1;
-    URL url;
+    URL url_img1;
     private void string_write(String string) {
         try {
             dout.writeUTF(string);
@@ -37,8 +36,8 @@ public class Window extends JPanel {
         }
         
         try {
-            url = new URL("https://cageescape.lovie.dev/game-resources/img1.png");
-            img1 = ImageIO.read(url);
+            url_img1 = new URL("https://cageescape.lovie.dev/game-resources/img1.png");
+            img1 = ImageIO.read(url_img1);
         } catch (IOException e) {
             throw new RuntimeException("Error with get image from url: " + e);
         }
@@ -58,6 +57,22 @@ public class Window extends JPanel {
         try {
             return dis.readUTF();
         } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+class Json {
+    private URL url_date;
+    public Json() {
+        JSONObject jsonO = new JSONObject();
+//        JSONObject json1 = new JSONObject();
+        JSONParser parser = new JSONParser();
+
+        try {
+            url_date = new URL("https://cageescape.lovie.dev/game-resources/date.png");
+
+        } catch (MalformedURLException e) {
             throw new RuntimeException(e);
         }
     }
